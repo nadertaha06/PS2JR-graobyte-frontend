@@ -2,9 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './components/PrivateRoute'
 import Login from './pages/login'
 import Produtos from './pages/Produtos'
-function ProdutosPlaceholder() {
-  return <div>Página de produtos</div>
-}
+import { AdminRoute } from './components/AdminRoute'
+import Funcionarios from './pages/Funcionarios'
 
 function App() {
   return (
@@ -16,6 +15,11 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/produtos" element={<Produtos />} />
         </Route>
+
+        <Route element={<AdminRoute />}>
+          <Route path="/funcionarios" element={<Funcionarios />} />
+        </Route>
+        
       </Routes>
     </BrowserRouter>
   )
