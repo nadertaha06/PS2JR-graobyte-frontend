@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.textPrimary};
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased; /* Deixa o texto mais nítido no Mac */
+    -webkit-font-smoothing: antialiased;
   }
 
   /* Remove o estilo padrão de listas */
@@ -54,6 +54,30 @@ const GlobalStyle = createGlobalStyle`
   input, textarea, select {
     font-family: inherit;
     font-size: inherit;
+  }
+
+  /* Focus visible — acessibilidade para navegação por teclado.
+     Cada componente pode sobrescrever com um outline personalizado. */
+  :focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Remove o outline padrão quando não se navega por teclado */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Respeita a preferência do usuário por movimento reduzido.
+     Desativa todas as animações e transições quando solicitado. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 `;
 

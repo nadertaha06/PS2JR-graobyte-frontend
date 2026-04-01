@@ -6,8 +6,8 @@ type NavButtonProps = {
 
 export const Container = styled.header`
   width: 100%;
-  border-bottom: 1px solid rgba(111, 78, 55, 0.12);
-  background: #fffaf3;
+  background: ${({ theme }) => theme.colors.surface};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   position: sticky;
   top: 0;
   z-index: 100;
@@ -16,93 +16,135 @@ export const Container = styled.header`
 export const Content = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  min-height: 80px;
+  min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 0 24px;
+  gap: ${({ theme }) => theme.spacing.lg};
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 0 ${({ theme }) => theme.spacing.md};
+    gap: ${({ theme }) => theme.spacing.sm};
+  }
 `
 
 export const Brand = styled.button`
   border: none;
   background: transparent;
   cursor: pointer;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #6f4e37;
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: ${({ theme }) => theme.fontSizes['2xl']};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  color: ${({ theme }) => theme.colors.cta};
   padding: 0;
+  flex-shrink: 0;
+  transition: color ${({ theme }) => theme.transitions.base};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.ctaHover};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+    outline-offset: 4px;
+    border-radius: ${({ theme }) => theme.radii.sm};
+  }
 `
 
 export const NavLinks = styled.nav`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: ${({ theme }) => theme.spacing.sm};
   flex: 1;
   justify-content: center;
 `
 
 export const NavButton = styled.button<NavButtonProps>`
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 999px;
-  border: 1px solid ${({ $active }) => ($active ? '#6f4e37' : '#d7c3ae')};
-  background: ${({ $active }) => ($active ? '#6f4e37' : 'transparent')};
-  color: ${({ $active }) => ($active ? '#fffaf3' : '#4a3428')};
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
+  height: 40px;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.full};
+  border: 1px solid ${({ $active, theme }) =>
+    $active ? theme.colors.cta : theme.colors.border};
+  background: ${({ $active, theme }) =>
+    $active ? theme.colors.cta : 'transparent'};
+  color: ${({ $active, theme }) =>
+    $active ? theme.colors.surface : theme.colors.textPrimary};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: background ${({ theme }) => theme.transitions.base},
+              border-color ${({ theme }) => theme.transitions.base},
+              color ${({ theme }) => theme.transitions.base};
 
   &:hover {
-    border-color: #6f4e37;
-    color: ${({ $active }) => ($active ? '#fffaf3' : '#6f4e37')};
+    border-color: ${({ theme }) => theme.colors.cta};
+    color: ${({ $active, theme }) =>
+      $active ? theme.colors.surface : theme.colors.cta};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+    outline-offset: 3px;
   }
 `
 
 export const UserSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex-shrink: 0;
 `
 
 export const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    display: none;
+  }
 `
 
 export const UserName = styled.span`
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #3e2c23;
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  color: ${({ theme }) => theme.colors.primary};
 `
 
 export const UserRole = styled.span`
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.82rem;
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #8b735c;
+  letter-spacing: 0.05em;
+  color: ${({ theme }) => theme.colors.textMuted};
 `
 
 export const LogoutButton = styled.button`
-  height: 42px;
-  padding: 0 18px;
-  border: none;
-  border-radius: 999px;
-  background: #c08b5c;
-  color: #fffaf3;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
+  height: 40px;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.full};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: background ${({ theme }) => theme.transitions.base},
+              border-color ${({ theme }) => theme.transitions.base},
+              color ${({ theme }) => theme.transitions.base};
 
   &:hover {
-    background: #a87448;
+    border-color: ${({ theme }) => theme.colors.error};
+    color: ${({ theme }) => theme.colors.errorText};
+    background: ${({ theme }) => theme.colors.errorBg};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+    outline-offset: 3px;
   }
 `

@@ -7,12 +7,14 @@ const theme = {
   colors: {
     // Paleta principal — tons de café + creme
     primary:     '#4A2C2A', // marrom escuro (café torrado)
+    cta:         '#6F4E37', // espresso — botões de ação primária
+    ctaHover:    '#5C3A21', // espresso escuro — hover de botões CTA
     secondary:   '#C8832A', // âmbar (café com leite)
     accent:      '#E8B86D', // dourado suave (crema do espresso)
 
     // Fundos
     background:  '#FDF6EE', // creme quente
-    surface:     '#FFFFFF', // branco para cards
+    surface:     '#FFFAF3', // branco-creme para cards e navbar
     surfaceAlt:  '#F5EDE0', // bege para inputs e áreas secundárias
 
     // Textos
@@ -21,9 +23,13 @@ const theme = {
     textMuted:     '#B09A86', // cinza-bege para placeholders
 
     // Feedbacks
-    success: '#4CAF50',
-    error:   '#E53935',
-    warning: '#FF9800',
+    success:     '#4CAF50',
+    successBg:   '#D1FAE5',
+    successText: '#065F46',
+    error:       '#E53935',
+    errorBg:     '#FEE2E2',
+    errorText:   '#991B1B',
+    warning:     '#FF9800',
 
     // Bordas
     border:       '#E0D0BC',
@@ -34,7 +40,7 @@ const theme = {
     // Display: usado em títulos grandes e logo
     display: "'Playfair Display', Georgia, serif",
     // Body: usado em textos e botões
-    body:    "'DM Sans', sans-serif",
+    body:    "'DM Sans', system-ui, sans-serif",
   },
 
   fontSizes: {
@@ -76,6 +82,13 @@ const theme = {
     sm: '0 1px 3px rgba(74,44,42,0.08)',
     md: '0 4px 16px rgba(74,44,42,0.12)',
     lg: '0 8px 32px rgba(74,44,42,0.16)',
+  },
+
+  // Tokens de transição — referenciados por todos os componentes interativos
+  transitions: {
+    fast: '150ms ease',
+    base: '200ms ease',
+    slow: '300ms ease',
   },
 
   // Breakpoints para responsividade
