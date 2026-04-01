@@ -14,7 +14,19 @@ export const Content = styled.div`
   margin: 0 auto;
   padding: 32px 24px;
 `
-
+export const CardCategory = styled.span`
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(192, 139, 92, 0.14);
+  color: #8a5a32;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  width: fit-content;
+`
 export const Title = styled.h1`
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
@@ -77,4 +89,80 @@ export const Status = styled.span<StatusProps>`
 export const Message = styled.p`
   font-family: 'DM Sans', sans-serif;
   color: #7a675b;
+`
+
+export const Header = styled.div`
+  margin-bottom: 28px;
+`
+
+export const HeaderTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+`
+
+export const Subtitle = styled.p`
+  margin: 8px 0 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: #7a675b;
+`
+
+export const NewProductButton = styled.button`
+  height: 46px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 12px;
+  background: #6f4e37;
+  color: #fffaf3;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: #5c3a21;
+  }
+`
+export const CardActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+`
+
+export const EditButton = styled.button`
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d7c3ae;
+  border-radius: 10px;
+  background: transparent;
+  color: #4a3428;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #6f4e37;
+    color: #6f4e37;
+  }
+`
+export const DeleteButton = styled.button`
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #f1b5b5;
+  border-radius: 10px;
+  background: transparent;
+  color: #b42318;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #b42318;
+    background: #fff1f1;
+  }
 `
