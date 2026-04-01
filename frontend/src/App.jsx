@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './components/PrivateRoute'
-import Login from './pages/Login'
+import Login from './pages/login'
 
 function ProdutosPlaceholder() {
   return <div>Página de produtos</div>
