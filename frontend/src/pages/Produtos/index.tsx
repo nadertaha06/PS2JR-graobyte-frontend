@@ -10,7 +10,11 @@ import {
   GlassWater,
   Cookie,
   Utensils,
-  Sandwich
+  Sandwich,
+  CheckCircle,
+  XCircle,
+  X,
+  CircleDashed
 } from 'lucide-react'
 import Navbar from '../../components/Navbar'
 import ProductForm from '../../components/ProductForm'
@@ -36,7 +40,6 @@ import {
   CardActions,
   EditButton,
   DeleteButton,
-  Message,
   SkeletonGrid,
   SkeletonCard,
   SkeletonLine,
@@ -46,10 +49,16 @@ import {
   EmptyStateText,
   EmptyStateCTA,
   ErrorBanner,
+  FilterSection,
+  FilterRow,
+  FilterRowLabel,
   FilterWrapper,
   FilterBar,
   FilterButton,
-  FilterCount
+  FilterCount,
+  ResultsBar,
+  ResultsText,
+  ClearFiltersButton
 } from './styles'
 
 type Produto = {
@@ -66,19 +75,26 @@ type ToastState = {
   type: 'success' | 'error'
 } | null
 
-type CategoriaFiltro = {
+/** Tipo unificado para qualquer opção de filtro */
+type FiltroOpcao = {
   valor: string
   label: string
   icon: React.ReactNode
 }
 
-const CATEGORIAS: CategoriaFiltro[] = [
-  { valor: 'todos',         label: 'Todos',          icon: <LayoutGrid size={15} /> },
-  { valor: 'bebida_quente', label: 'Bebida quente',  icon: <Coffee      size={15} /> },
-  { valor: 'bebida_gelada', label: 'Bebida gelada',  icon: <GlassWater  size={15} /> },
-  { valor: 'doce',          label: 'Doce',           icon: <Cookie      size={15} /> },
-  { valor: 'salgado',       label: 'Salgado',        icon: <Utensils    size={15} /> },
-  { valor: 'sanduiche',     label: 'Sanduíche',      icon: <Sandwich    size={15} /> },
+const CATEGORIAS: FiltroOpcao[] = [
+  { valor: 'todos',         label: 'Todas',         icon: <LayoutGrid size={15} /> },
+  { valor: 'bebida_quente', label: 'Bebida quente', icon: <Coffee     size={15} /> },
+  { valor: 'bebida_gelada', label: 'Bebida gelada', icon: <GlassWater size={15} /> },
+  { valor: 'doce',          label: 'Doce',          icon: <Cookie     size={15} /> },
+  { valor: 'salgado',       label: 'Salgado',       icon: <Utensils   size={15} /> },
+  { valor: 'sanduiche',     label: 'Sanduíche',     icon: <Sandwich   size={15} /> },
+]
+
+const DISPONIBILIDADES: FiltroOpcao[] = [
+  { valor: 'todos',        label: 'Todos',        icon: <CircleDashed size={15} /> },
+  { valor: 'disponivel',   label: 'Disponível',   icon: <CheckCircle  size={15} /> },
+  { valor: 'indisponivel', label: 'Indisponível', icon: <XCircle      size={15} /> },
 ]
 
 export default function Produtos() {
@@ -91,6 +107,7 @@ export default function Produtos() {
   const [deletando, setDeletando] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
   const [categoriaFiltro, setCategoriaFiltro] = useState('todos')
+  const [disponibilidadeFiltro, setDisponibilidadeFiltro] = useState('todos')
 
   async function fetchProdutos() {
     try {
@@ -109,29 +126,78 @@ export default function Produtos() {
     fetchProdutos()
   }, [])
 
-  /* Filtragem client-side — sem novas chamadas de API */
+
+  useEffect(() => {
+    if (categoriaFiltro === 'todos') return
+    const categoriaAindaExiste = produtos.some(
+      (p) => p.categoria === categoriaFiltro
+    )
+    if (!categoriaAindaExiste) {
+      setCategoriaFiltro('todos')
+    }
+  }, [produtos, categoriaFiltro])
+
+  /* ── Lógica de filtragem cruzada ─────────────────── */
+
+  /** Produtos após aplicar APENAS o filtro de disponibilidade */
+  const produtosPorDisponibilidade =
+    disponibilidadeFiltro === 'todos'
+      ? produtos
+      : produtos.filter((p) =>
+          disponibilidadeFiltro === 'disponivel'
+            ? p.disponivel !== false
+            : p.disponivel === false
+        )
+
+  /** Produtos após aplicar AMBOS os filtros */
   const produtosFiltrados =
     categoriaFiltro === 'todos'
-      ? produtos
-      : produtos.filter((p) => p.categoria === categoriaFiltro)
+      ? produtosPorDisponibilidade
+      : produtosPorDisponibilidade.filter(
+          (p) => p.categoria === categoriaFiltro
+        )
 
-  /* Exibe apenas categorias que têm ao menos um produto */
+  /** Categorias com ao menos 1 produto no filtro de disponibilidade ativo */
   const categoriasDisponiveis = CATEGORIAS.filter(
     (cat) =>
       cat.valor === 'todos' ||
-      produtos.some((p) => p.categoria === cat.valor)
+      produtosPorDisponibilidade.some((p) => p.categoria === cat.valor)
   )
 
+  /** Conta produtos por categoria respeitando o filtro de disponibilidade */
   function contarPorCategoria(valor: string) {
-    if (valor === 'todos') return produtos.length
-    return produtos.filter((p) => p.categoria === valor).length
+    if (valor === 'todos') return produtosPorDisponibilidade.length
+    return produtosPorDisponibilidade.filter((p) => p.categoria === valor).length
   }
+
+  /** Conta produtos por disponibilidade respeitando o filtro de categoria */
+  function contarPorDisponibilidade(valor: string) {
+    const base =
+      categoriaFiltro === 'todos'
+        ? produtos
+        : produtos.filter((p) => p.categoria === categoriaFiltro)
+    if (valor === 'todos') return base.length
+    if (valor === 'disponivel') return base.filter((p) => p.disponivel !== false).length
+    return base.filter((p) => p.disponivel === false).length
+  }
+
+  const filtrosAtivos =
+    categoriaFiltro !== 'todos' || disponibilidadeFiltro !== 'todos'
+
+  function handleLimparFiltros() {
+    setCategoriaFiltro('todos')
+    setDisponibilidadeFiltro('todos')
+  }
+
+  /* ── Helpers de formatação ───────────────────────── */
 
   function formatarCategoria(categoria: string) {
     return categoria
       .replace(/_/g, ' ')
       .replace(/^./, (letra) => letra.toUpperCase())
   }
+
+  /* ── Handlers do CRUD ───────────────────────────── */
 
   function handleOpenCreate() {
     setProdutoEmEdicao(null)
@@ -149,10 +215,19 @@ export default function Produtos() {
   }
 
   function handleFormSuccess() {
-    const message = produtoEmEdicao
-      ? 'Produto atualizado com sucesso!'
-      : 'Produto adicionado com sucesso!'
+    const isCreating = !produtoEmEdicao
+    const message = isCreating
+      ? 'Produto adicionado com sucesso!'
+      : 'Produto atualizado com sucesso!'
+
     setToast({ message, type: 'success' })
+
+
+    if (isCreating) {
+      setCategoriaFiltro('todos')
+      setDisponibilidadeFiltro('todos')
+    }
+
     fetchProdutos()
   }
 
@@ -182,6 +257,8 @@ export default function Produtos() {
     setProdutoParaDeletar(null)
   }
 
+  /* ── Render ──────────────────────────────────────── */
+
   return (
     <Container>
       <Navbar />
@@ -210,24 +287,80 @@ export default function Produtos() {
 
         {/* Filtros — aparecem só quando há produtos carregados */}
         {!loading && !erro && produtos.length > 0 && (
-          <FilterWrapper>
-            <FilterBar>
-              {categoriasDisponiveis.map((cat) => (
-                <FilterButton
-                  key={cat.valor}
-                  type="button"
-                  $active={categoriaFiltro === cat.valor}
-                  onClick={() => setCategoriaFiltro(cat.valor)}
-                >
-                  {cat.icon}
-                  {cat.label}
-                  <FilterCount $active={categoriaFiltro === cat.valor}>
-                    {contarPorCategoria(cat.valor)}
-                  </FilterCount>
-                </FilterButton>
-              ))}
-            </FilterBar>
-          </FilterWrapper>
+          <FilterSection>
+            {/* Linha 1: Categoria */}
+            <FilterRow>
+              <FilterRowLabel>Categoria</FilterRowLabel>
+              <FilterWrapper>
+                <FilterBar>
+                  {categoriasDisponiveis.map((cat) => (
+                    <FilterButton
+                      key={cat.valor}
+                      type="button"
+                      $active={categoriaFiltro === cat.valor}
+                      onClick={() => setCategoriaFiltro(cat.valor)}
+                    >
+                      {cat.icon}
+                      {cat.label}
+                      <FilterCount $active={categoriaFiltro === cat.valor}>
+                        {contarPorCategoria(cat.valor)}
+                      </FilterCount>
+                    </FilterButton>
+                  ))}
+                </FilterBar>
+              </FilterWrapper>
+            </FilterRow>
+
+            {/* Linha 2: Disponibilidade */}
+            <FilterRow>
+              <FilterRowLabel>Disponibilidade</FilterRowLabel>
+              <FilterWrapper>
+                <FilterBar>
+                  {DISPONIBILIDADES.map((disp) => (
+                    <FilterButton
+                      key={disp.valor}
+                      type="button"
+                      $active={disponibilidadeFiltro === disp.valor}
+                      onClick={() => setDisponibilidadeFiltro(disp.valor)}
+                    >
+                      {disp.icon}
+                      {disp.label}
+                      <FilterCount $active={disponibilidadeFiltro === disp.valor}>
+                        {contarPorDisponibilidade(disp.valor)}
+                      </FilterCount>
+                    </FilterButton>
+                  ))}
+                </FilterBar>
+              </FilterWrapper>
+            </FilterRow>
+          </FilterSection>
+        )}
+
+        {/* Barra de resultados */}
+        {!loading && !erro && produtos.length > 0 && (
+          <ResultsBar>
+            <ResultsText>
+              {filtrosAtivos ? (
+                <>
+                  Exibindo <strong>{produtosFiltrados.length}</strong> de{' '}
+                  <strong>{produtos.length}</strong>{' '}
+                  {produtos.length === 1 ? 'produto' : 'produtos'}
+                </>
+              ) : (
+                <>
+                  <strong>{produtos.length}</strong>{' '}
+                  {produtos.length === 1 ? 'produto' : 'produtos'} no cardápio
+                </>
+              )}
+            </ResultsText>
+
+            {filtrosAtivos && (
+              <ClearFiltersButton type="button" onClick={handleLimparFiltros}>
+                <X size={14} />
+                Limpar filtros
+              </ClearFiltersButton>
+            )}
+          </ResultsBar>
         )}
 
         {/* Skeleton de carregamento */}
@@ -249,7 +382,7 @@ export default function Produtos() {
           </SkeletonGrid>
         )}
 
-        {/* Estado vazio — cardápio sem produtos */}
+        {/* Estado vazio — cardápio sem nenhum produto */}
         {!loading && !erro && produtos.length === 0 && (
           <EmptyState>
             <EmptyStateIcon>
@@ -267,23 +400,20 @@ export default function Produtos() {
           </EmptyState>
         )}
 
-        {/* Estado vazio — filtro sem resultados */}
+        {/* Estado vazio — filtros sem resultado */}
         {!loading && !erro && produtos.length > 0 && produtosFiltrados.length === 0 && (
           <EmptyState>
             <EmptyStateIcon>
               <PackageOpen size={32} />
             </EmptyStateIcon>
-            <EmptyStateTitle>Nenhum produto nesta categoria</EmptyStateTitle>
+            <EmptyStateTitle>Nenhum produto encontrado</EmptyStateTitle>
             <EmptyStateText>
-              Não há produtos cadastrados em{' '}
-              <strong>
-                {CATEGORIAS.find((c) => c.valor === categoriaFiltro)?.label}
-              </strong>
-              . Adicione um novo produto ou escolha outra categoria.
+              Nenhum produto corresponde aos filtros selecionados. Tente
+              ajustar os filtros ou limpe a seleção atual.
             </EmptyStateText>
-            <EmptyStateCTA type="button" onClick={() => setCategoriaFiltro('todos')}>
-              <LayoutGrid size={18} />
-              Ver todos os produtos
+            <EmptyStateCTA type="button" onClick={handleLimparFiltros}>
+              <X size={18} />
+              Limpar filtros
             </EmptyStateCTA>
           </EmptyState>
         )}
@@ -351,8 +481,6 @@ export default function Produtos() {
           />
         )}
       </Content>
-
-      {loading && erro && <Message>{erro}</Message>}
     </Container>
   )
 }

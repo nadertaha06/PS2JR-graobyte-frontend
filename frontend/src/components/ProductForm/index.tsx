@@ -10,6 +10,7 @@ import {
   Form,
   FormGroup,
   Label,
+  RequiredMark,
   Input,
   TextArea,
   Select,
@@ -129,7 +130,9 @@ export default function ProductForm({
 
         <Form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label htmlFor="nome">Nome</Label>
+            <Label htmlFor="nome">
+              Nome <RequiredMark aria-hidden="true">*</RequiredMark>
+            </Label>
             <Input
               id="nome"
               value={nome}
@@ -151,7 +154,9 @@ export default function ProductForm({
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="preco">Preço</Label>
+            <Label htmlFor="preco">
+              Preço <RequiredMark aria-hidden="true">*</RequiredMark>
+            </Label>
             <Input
               id="preco"
               type="number"
@@ -165,7 +170,9 @@ export default function ProductForm({
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="categoria">Categoria</Label>
+            <Label htmlFor="categoria">
+              Categoria <RequiredMark aria-hidden="true">*</RequiredMark>
+            </Label>
             <Select
               id="categoria"
               value={categoria}

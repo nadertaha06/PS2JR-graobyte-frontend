@@ -368,15 +368,22 @@ export const EmptyStateCTA = styled.button`
 
 /* ── Filter Bar ───────────────────────────────────── */
 
+/** Agrupa as duas linhas de filtros (categoria + disponibilidade) */
+export const FilterSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+`
+
 /**
  * FilterWrapper lida com o scroll horizontal.
- * Fica separado do FilterBar (flex) para que o overflow-x: auto
+ * Separado do FilterBar (flex) para que overflow-x: auto
  * não ative o clip no eixo Y e não corte o hover dos botões.
  */
 export const FilterWrapper = styled.div`
   overflow-x: auto;
   overflow-y: visible;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
@@ -389,6 +396,24 @@ export const FilterBar = styled.div`
   gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.sm} 2px;
   min-width: max-content;
+`
+
+export const FilterRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+`
+
+export const FilterRowLabel = styled.span`
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  color: ${({ theme }) => theme.colors.textMuted};
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 88px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 `
 
 type FilterButtonProps = {
@@ -453,6 +478,55 @@ export const FilterCount = styled.span<FilterButtonProps>`
   font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
   line-height: 1;
+`
+
+/* ── Results Bar ──────────────────────────────────── */
+
+export const ResultsBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  flex-wrap: wrap;
+`
+
+export const ResultsText = styled.p`
+  margin: 0;
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textMuted};
+
+  strong {
+    color: ${({ theme }) => theme.colors.primary};
+    font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  }
+`
+
+export const ClearFiltersButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  color: ${({ theme }) => theme.colors.cta};
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color ${({ theme }) => theme.transitions.base};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.ctaHover};
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 `
 
 /* ── Error Banner ─────────────────────────────────── */
