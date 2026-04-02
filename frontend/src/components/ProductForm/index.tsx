@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { X } from 'lucide-react'
 import { criarProduto, atualizarProduto } from '../../services/produtosService'
 import {
   Overlay,
@@ -49,6 +50,13 @@ export default function ProductForm({
   const [disponivel, setDisponivel] = useState(true)
   const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [])
 
   useEffect(() => {
     if (initialData) {
@@ -114,8 +122,8 @@ export default function ProductForm({
       <Modal>
         <Header>
           <Title>{isEditing ? 'Editar produto' : 'Novo produto'}</Title>
-          <CloseButton type="button" onClick={onClose}>
-            ×
+          <CloseButton type="button" onClick={onClose} aria-label="Fechar formulário">
+            <X size={18} />
           </CloseButton>
         </Header>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import {
   listarFuncionarios,
   cadastrarFuncionario,
@@ -44,6 +45,8 @@ export default function Funcionarios() {
   const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [funcionarioParaRemover, setFuncionarioParaRemover] = useState<Funcionario | null>(null)
+  const [removendo, setRemovendo] = useState(false)
 
   async function fetchFuncionarios() {
     try {
@@ -91,22 +94,29 @@ export default function Funcionarios() {
     }
   }
 
-  async function handleRemove(funcionario: Funcionario) {
-    const confirmed = window.confirm(
-      `Tem certeza que deseja remover o funcionário "${funcionario.nome}"?`
-    )
+  function handleRemove(funcionario: Funcionario) {
+    setFuncionarioParaRemover(funcionario)
+  }
 
-    if (!confirmed) {
-      return
-    }
+  async function handleConfirmRemove() {
+    if (!funcionarioParaRemover) return
 
     try {
+      setRemovendo(true)
       setErro('')
-      await removerFuncionario(funcionario._id)
+      await removerFuncionario(funcionarioParaRemover._id)
+      setFuncionarioParaRemover(null)
       await fetchFuncionarios()
     } catch {
+      setFuncionarioParaRemover(null)
       setErro('Erro ao remover funcionário.')
+    } finally {
+      setRemovendo(false)
     }
+  }
+
+  function handleCancelRemove() {
+    setFuncionarioParaRemover(null)
   }
 
   return (
@@ -194,6 +204,17 @@ export default function Funcionarios() {
           </ListCard>
         </Layout>
       </Content>
+
+      <ConfirmDialog
+        isOpen={funcionarioParaRemover !== null}
+        title="Remover funcionário"
+        description="Esta ação não pode ser desfeita. Tem certeza que deseja remover o funcionário:"
+        itemName={funcionarioParaRemover?.nome}
+        confirmLabel="Remover"
+        onConfirm={handleConfirmRemove}
+        onCancel={handleCancelRemove}
+        loading={removendo}
+      />
     </Container>
   )
 }

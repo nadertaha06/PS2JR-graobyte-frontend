@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Coffee } from 'lucide-react'
 import { login } from '../../services/authService'
 import {
   Container,
@@ -53,7 +54,10 @@ export default function Login() {
     <Container>
       <Card>
         <Header>
-          <Logo>Grão & Byte</Logo>
+          <Logo>
+            <Coffee size={28} aria-hidden="true" />
+            Grão & Byte
+          </Logo>
           <Title>Entrar</Title>
           <Subtitle>Acesse a gestão interna da cafeteria</Subtitle>
         </Header>
