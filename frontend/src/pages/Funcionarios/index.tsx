@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import Toast from '../../components/Toast'
 import {
   listarFuncionarios,
   cadastrarFuncionario,
@@ -26,8 +27,12 @@ import {
   EmployeeInfo,
   EmployeeName,
   EmployeeEmail,
+  EmployeeRole,
   RemoveButton,
-  Message
+  Message,
+  SkeletonItem,
+  SkeletonLine,
+  SkeletonInfo
 } from './styles'
 
 type Funcionario = {
@@ -36,6 +41,11 @@ type Funcionario = {
   email: string
   role: string
 }
+
+type ToastState = {
+  message: string
+  type: 'success' | 'error'
+} | null
 
 export default function Funcionarios() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([])
@@ -47,6 +57,7 @@ export default function Funcionarios() {
   const [submitting, setSubmitting] = useState(false)
   const [funcionarioParaRemover, setFuncionarioParaRemover] = useState<Funcionario | null>(null)
   const [removendo, setRemovendo] = useState(false)
+  const [toast, setToast] = useState<ToastState>(null)
 
   async function fetchFuncionarios() {
     try {
@@ -86,6 +97,7 @@ export default function Funcionarios() {
       setNome('')
       setEmail('')
       setSenha('')
+      setToast({ message: 'Funcionário cadastrado com sucesso!', type: 'success' })
       await fetchFuncionarios()
     } catch {
       setErro('Erro ao cadastrar funcionário.')
@@ -106,6 +118,7 @@ export default function Funcionarios() {
       setErro('')
       await removerFuncionario(funcionarioParaRemover._id)
       setFuncionarioParaRemover(null)
+      setToast({ message: 'Funcionário removido com sucesso!', type: 'success' })
       await fetchFuncionarios()
     } catch {
       setFuncionarioParaRemover(null)
@@ -176,7 +189,19 @@ export default function Funcionarios() {
           </FormCard>
 
           <ListCard>
-            {loading && <Message>Carregando funcionários...</Message>}
+            {loading && (
+              <List>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SkeletonItem key={i}>
+                    <SkeletonInfo>
+                      <SkeletonLine $width="55%" $height="16px" />
+                      <SkeletonLine $width="75%" $height="13px" />
+                    </SkeletonInfo>
+                    <SkeletonLine $width="72px" $height="32px" />
+                  </SkeletonItem>
+                ))}
+              </List>
+            )}
 
             {!loading && funcionarios.length === 0 && (
               <Message>Nenhum funcionário encontrado.</Message>
@@ -189,6 +214,9 @@ export default function Funcionarios() {
                     <EmployeeInfo>
                       <EmployeeName>{funcionario.nome}</EmployeeName>
                       <EmployeeEmail>{funcionario.email}</EmployeeEmail>
+                      <EmployeeRole $admin={funcionario.role === 'admin'}>
+                        {funcionario.role === 'admin' ? 'Admin' : 'Funcionário'}
+                      </EmployeeRole>
                     </EmployeeInfo>
 
                     <RemoveButton
@@ -215,6 +243,14 @@ export default function Funcionarios() {
         onCancel={handleCancelRemove}
         loading={removendo}
       />
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </Container>
   )
 }

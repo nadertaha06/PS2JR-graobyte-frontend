@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 export const Container = styled.div`
   min-height: 100vh;
@@ -156,12 +156,18 @@ export const ListItem = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme }) => theme.colors.surfaceAlt};
+  background: ${({ theme }) => theme.colors.surface};
   border: 1px solid ${({ theme }) => theme.colors.border};
-  transition: background ${({ theme }) => theme.transitions.fast};
+  transition: transform ${({ theme }) => theme.transitions.base},
+              box-shadow ${({ theme }) => theme.transitions.base},
+              border-color ${({ theme }) => theme.transitions.base};
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.background};
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: ${({ theme }) => theme.shadows.md};
+      border-color: ${({ theme }) => theme.colors.secondary};
+    }
   }
 `
 
@@ -224,4 +230,63 @@ export const Message = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   padding: ${({ theme }) => theme.spacing.lg} 0;
   text-align: center;
+`
+
+type RoleProps = { $admin?: boolean }
+
+export const EmployeeRole = styled.span<RoleProps>`
+  display: inline-flex;
+  align-items: center;
+  padding: 2px ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.radii.full};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  letter-spacing: 0.03em;
+  background: ${({ $admin, theme }) =>
+    $admin ? 'rgba(200,131,42,0.14)' : 'rgba(74,44,42,0.06)'};
+  color: ${({ $admin, theme }) =>
+    $admin ? theme.colors.secondary : theme.colors.textMuted};
+  border: 1px solid ${({ $admin, theme }) =>
+    $admin ? 'rgba(200,131,42,0.3)' : theme.colors.border};
+`
+
+const shimmer = keyframes`
+  0%   { background-position: -468px 0; }
+  100% { background-position:  468px 0; }
+`
+
+const skeletonBase = () => `
+  border-radius: 6px;
+  background: linear-gradient(to right, #F5EDE0 8%, #FDF6EE 18%, #F5EDE0 33%);
+  background-size: 800px 104px;
+`
+
+export const SkeletonItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #E0D0BC;
+  background: #F5EDE0;
+`
+
+export const SkeletonLine = styled.div<{ $width?: string; $height?: string }>`
+  height: ${({ $height }) => $height ?? '14px'};
+  width: ${({ $width }) => $width ?? '100%'};
+  ${skeletonBase()}
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${shimmer} 1.5s linear infinite;
+  }
+`
+
+export const SkeletonInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
 `

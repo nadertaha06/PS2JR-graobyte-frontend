@@ -19,7 +19,6 @@ function App() {
         <Route element={<AdminRoute />}>
           <Route path="/funcionarios" element={<Funcionarios />} />
         </Route>
-        
       </Routes>
     </BrowserRouter>
   )

@@ -67,7 +67,7 @@ export default function ConfirmDialog({
           </CancelButton>
 
           <ConfirmButton type="button" onClick={onConfirm} disabled={loading}>
-            {loading ? 'Excluindo...' : confirmLabel}
+            {loading ? `${confirmLabel}...` : confirmLabel}
           </ConfirmButton>
         </Actions>
       </DialogBox>

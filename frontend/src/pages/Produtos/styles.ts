@@ -295,6 +295,12 @@ export const SkeletonLine = styled.div<{ $width?: string; $height?: string }>`
   }
 `
 
+export const SkeletonCardFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: ${({ theme }) => theme.spacing.xs};
+`
+
 /* ── Empty State ──────────────────────────────────── */
 
 export const EmptyState = styled.div`

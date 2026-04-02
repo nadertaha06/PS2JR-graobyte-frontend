@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ComponentType } from 'react'
 import {
   Plus,
   Pencil,
@@ -43,6 +43,7 @@ import {
   SkeletonGrid,
   SkeletonCard,
   SkeletonLine,
+  SkeletonCardFooter,
   EmptyState,
   EmptyStateIcon,
   EmptyStateTitle,
@@ -79,22 +80,22 @@ type ToastState = {
 type FiltroOpcao = {
   valor: string
   label: string
-  icon: React.ReactNode
+  Icon: ComponentType<{ size?: number }>
 }
 
 const CATEGORIAS: FiltroOpcao[] = [
-  { valor: 'todos',         label: 'Todas',         icon: <LayoutGrid size={15} /> },
-  { valor: 'bebida_quente', label: 'Bebida quente', icon: <Coffee     size={15} /> },
-  { valor: 'bebida_gelada', label: 'Bebida gelada', icon: <GlassWater size={15} /> },
-  { valor: 'doce',          label: 'Doce',          icon: <Cookie     size={15} /> },
-  { valor: 'salgado',       label: 'Salgado',       icon: <Utensils   size={15} /> },
-  { valor: 'sanduiche',     label: 'Sanduíche',     icon: <Sandwich   size={15} /> },
+  { valor: 'todos',         label: 'Todas',         Icon: LayoutGrid },
+  { valor: 'bebida_quente', label: 'Bebida quente', Icon: Coffee     },
+  { valor: 'bebida_gelada', label: 'Bebida gelada', Icon: GlassWater },
+  { valor: 'doce',          label: 'Doce',          Icon: Cookie     },
+  { valor: 'salgado',       label: 'Salgado',       Icon: Utensils   },
+  { valor: 'sanduiche',     label: 'Sanduíche',     Icon: Sandwich   },
 ]
 
 const DISPONIBILIDADES: FiltroOpcao[] = [
-  { valor: 'todos',        label: 'Todos',        icon: <CircleDashed size={15} /> },
-  { valor: 'disponivel',   label: 'Disponível',   icon: <CheckCircle  size={15} /> },
-  { valor: 'indisponivel', label: 'Indisponível', icon: <XCircle      size={15} /> },
+  { valor: 'todos',        label: 'Todos',        Icon: CircleDashed },
+  { valor: 'disponivel',   label: 'Disponível',   Icon: CheckCircle  },
+  { valor: 'indisponivel', label: 'Indisponível', Icon: XCircle      },
 ]
 
 export default function Produtos() {
@@ -300,7 +301,7 @@ export default function Produtos() {
                       $active={categoriaFiltro === cat.valor}
                       onClick={() => setCategoriaFiltro(cat.valor)}
                     >
-                      {cat.icon}
+                      <cat.Icon size={15} />
                       {cat.label}
                       <FilterCount $active={categoriaFiltro === cat.valor}>
                         {contarPorCategoria(cat.valor)}
@@ -323,7 +324,7 @@ export default function Produtos() {
                       $active={disponibilidadeFiltro === disp.valor}
                       onClick={() => setDisponibilidadeFiltro(disp.valor)}
                     >
-                      {disp.icon}
+                      <disp.Icon size={15} />
                       {disp.label}
                       <FilterCount $active={disponibilidadeFiltro === disp.valor}>
                         {contarPorDisponibilidade(disp.valor)}
@@ -373,10 +374,10 @@ export default function Produtos() {
                 <SkeletonLine $width="100%" />
                 <SkeletonLine $width="90%" />
                 <SkeletonLine $width="70%" />
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                <SkeletonCardFooter>
                   <SkeletonLine $width="30%" $height="20px" />
                   <SkeletonLine $width="25%" $height="20px" />
-                </div>
+                </SkeletonCardFooter>
               </SkeletonCard>
             ))}
           </SkeletonGrid>
@@ -432,7 +433,7 @@ export default function Produtos() {
                 </CardDescription>
 
                 <CardFooter>
-                  <Price>R$ {produto.preco.toFixed(2)}</Price>
+                  <Price>{produto.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Price>
 
                   <Status $active={produto.disponivel !== false}>
                     {produto.disponivel !== false ? 'Disponível' : 'Indisponível'}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Container,
@@ -22,7 +22,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const user = useMemo(() => {
+  const [user] = useState<User | null>(() => {
     const storedUser = localStorage.getItem('user')
 
     if (!storedUser) {
@@ -34,7 +34,7 @@ export default function Navbar() {
     } catch {
       return null
     }
-  }, [])
+  })
 
   function handleLogout() {
     localStorage.removeItem('token')

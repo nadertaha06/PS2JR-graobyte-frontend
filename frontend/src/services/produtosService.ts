@@ -33,11 +33,6 @@ export const listarProdutos = async (): Promise<Produto[]> => {
   return response.data;
 };
 
-export const buscarProduto = async (id: string): Promise<Produto> => {
-  const response = await api.get<Produto>(`/produtos/${id}`);
-  return response.data;
-};
-
 export const criarProduto = async (dados: ProdutoInput): Promise<Produto> => {
   const response = await api.post<Produto>('/produtos/', dados);
   return response.data;

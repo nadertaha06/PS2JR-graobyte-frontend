@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { criarProduto, atualizarProduto } from '../../services/produtosService'
 import {
@@ -87,15 +88,16 @@ export default function ProductForm({
       return
     }
 
-    if (!preco || Number(preco) <= 0) {
-      setErro('Informe um preço válido.')
+    const precoNormalizado = preco.replace(',', '.')
+    if (!precoNormalizado || Number(precoNormalizado) <= 0 || isNaN(Number(precoNormalizado))) {
+      setErro('Informe um preço válido. Ex.: 12,50')
       return
     }
 
     const payload = {
       nome: nome.trim(),
       descricao: descricao.trim() || undefined,
-      preco: Number(preco),
+      preco: Number(precoNormalizado),
       categoria,
       disponivel
     }
@@ -118,7 +120,7 @@ export default function ProductForm({
     }
   }
 
-  return (
+  return createPortal(
     <Overlay>
       <Modal>
         <Header>
@@ -159,13 +161,11 @@ export default function ProductForm({
             </Label>
             <Input
               id="preco"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               value={preco}
               onChange={(event) => setPreco(event.target.value)}
-              placeholder="Ex.: 12.50"
-              required
+              placeholder="Ex.: 12,50"
             />
           </FormGroup>
 
@@ -215,6 +215,7 @@ export default function ProductForm({
           </Actions>
         </Form>
       </Modal>
-    </Overlay>
+    </Overlay>,
+    document.body
   )
 }
