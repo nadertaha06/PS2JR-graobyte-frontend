@@ -366,6 +366,95 @@ export const EmptyStateCTA = styled.button`
   }
 `
 
+/* ── Filter Bar ───────────────────────────────────── */
+
+/**
+ * FilterWrapper lida com o scroll horizontal.
+ * Fica separado do FilterBar (flex) para que o overflow-x: auto
+ * não ative o clip no eixo Y e não corte o hover dos botões.
+ */
+export const FilterWrapper = styled.div`
+  overflow-x: auto;
+  overflow-y: visible;
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
+
+export const FilterBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm} 2px;
+  min-width: max-content;
+`
+
+type FilterButtonProps = {
+  $active?: boolean
+}
+
+export const FilterButton = styled.button<FilterButtonProps>`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  height: 38px;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radii.full};
+  border: 1.5px solid
+    ${({ $active, theme }) =>
+      $active ? theme.colors.cta : theme.colors.border};
+  background: ${({ $active, theme }) =>
+    $active ? theme.colors.cta : theme.colors.surface};
+  color: ${({ $active, theme }) =>
+    $active ? theme.colors.surface : theme.colors.textSecondary};
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background ${({ theme }) => theme.transitions.base},
+              border-color ${({ theme }) => theme.transitions.base},
+              color ${({ theme }) => theme.transitions.base},
+              transform ${({ theme }) => theme.transitions.fast},
+              box-shadow ${({ theme }) => theme.transitions.base};
+
+  &:hover {
+    background: ${({ $active, theme }) =>
+      $active ? theme.colors.ctaHover : theme.colors.surfaceAlt};
+    border-color: ${({ $active, theme }) =>
+      $active ? theme.colors.ctaHover : theme.colors.cta};
+    color: ${({ $active, theme }) =>
+      $active ? theme.colors.surface : theme.colors.cta};
+    transform: translateY(-1px);
+    box-shadow: ${({ theme }) => theme.shadows.sm};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+    outline-offset: 2px;
+  }
+`
+
+export const FilterCount = styled.span<FilterButtonProps>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 ${({ theme }) => theme.spacing.xs};
+  border-radius: ${({ theme }) => theme.radii.full};
+  background: ${({ $active, theme }) =>
+    $active ? 'rgba(255,255,255,0.25)' : theme.colors.surfaceAlt};
+  color: ${({ $active, theme }) =>
+    $active ? theme.colors.surface : theme.colors.textMuted};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  line-height: 1;
+`
+
 /* ── Error Banner ─────────────────────────────────── */
 
 export const ErrorBanner = styled.div`
